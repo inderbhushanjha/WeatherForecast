@@ -1,10 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if user.is_authenticated %}
 
 <div>
-    <input type="text">hello
-    <input type="button" value="hello">
+    <form action="home" method="post">
+        {% csrf_token%}
+    <input type="text" name = 'cityname'>
+    <input type="submit" value="Add City">
+    </form>
 </div>
+
+
+<div>
+    <h3>{{user.username}} is loged in</h3>
+</div>
+{%else%}
+<div>
+    <p>login first click <a href="login">here</a> to login.</p>
+</div>
+{%endif%}
 
 {% endblock %}

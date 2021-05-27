@@ -1,16 +1,14 @@
+import requests
 from django.shortcuts import render
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from decouple import config
+from .models import Cities
 # Create your views here.
 
 
 def index(request):
-    API_KEY = config('WEATHER_API')
-    print(type(API_KEY))
-    print(API_KEY)
-    st = 'api.openweathermap.org/data/2.5/weather?q={city name}&appid='
     return render(request,'index.html')
 
 def login(request):
@@ -56,6 +54,20 @@ def signup(request):
     return render(request, 'signup.html')
 
 def home(request):
+    if request.method == 'POST':
+        city = request.POST['cityname']
+        current_user = request.user
+        duplicateCityData = Cities.objects.filter(visited = city).exists()
+        print(duplicateCityData)
+        if duplicateCityData is not True :
+            citydata = Cities(username_id = current_user.id,visited = city)  # adding city to database.
+            citydata.save()
+        # API_KEY = config('WEATHER_API')
+        # print(type(API_KEY))
+        # print(API_KEY)
+        # url = 'https://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid={}'
+        # re = requests.get(url.format(city, API_KEY))
+        # print(re.text)
     return render(request, 'index.html')
 
 def about(request):
