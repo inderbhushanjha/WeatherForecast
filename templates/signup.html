@@ -144,13 +144,22 @@
 
 <body>
     <div class="center">
+        
         <h1>Signup</h1>
+        {% for message in messages%}
+        <li>{{message}}</li>
+        {% endfor%}
         <form action="signup" method="post">
             {% csrf_token %}
             <div class="txt_field">
-                <input type="text" name="fullname" required>
+                <input type="text" name="first_name" required>
                 <span></span>
-                <label>Full Name</label>
+                <label>First Name</label>
+            </div>
+            <div class="txt_field">
+                <input type="text" name="last_name" required>
+                <span></span>
+                <label>Last Name</label>
             </div>
             <div class="txt_field">
                 <input type="text" name="username" required>
@@ -163,14 +172,9 @@
                 <label>Email</label>
             </div>
             <div class="txt_field">
-                <input type="password" name="password1" required>
+                <input type="password" name="password" required>
                 <span></span>
                 <label>Password</label>
-            </div>
-            <div class="txt_field">
-                <input type="password" name="password2" required>
-                <span></span>
-                <label>Confirm Password</label>
             </div>
             <div class="signup_link">
             <input type="checkbox" id="tc" name="tc" value="on" checked>
