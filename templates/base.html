@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'images/icon1.png'%}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/style.css'%}">
+    <title>Forecast</title>
+    <script defer src="{% static 'js/app.js'%}"></script>
+</head>
+<body class="light">
+    
+    <nav class="navbar">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a href="home">Home</a></li>
+            <li class="nav-item">
+                <a href="about">About</a>
+            </li>
+            <!-- dropdown -->
+            <li class="nav-item has-dropdown">
+                <a href="#">Theme</a>
+                <ul class="dropdown">
+                    <li class="dropdown-item">
+                        <a href="#" id="light">Light</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href="#" id="dark">Dark</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href="#" id="solar">Solarize</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- login button -->
+
+            <li class="nav-item"> <a href="login">Login</a></li>
+        </ul>
+    </nav>
+    <header>
+        <img src="{%static 'images/icon1.png'%}" class="logo" alt="">
+        <h1>Forecast</h1>
+    </header>
+    <main>
+        {% block content %}
+
+        {% endblock %}
+    </main>
+
+        <div id="progressbar"></div>
+        <div class="scrollPath"></div>
+<script type="text/javascript">
+    let progress = document.getElementById('progressbar');
+    let totalHeight = document.body.scrollHeight = window.innerHeight;
+    window.onscroll = function(){
+        let progressHeight = (window.pageYOffset / totalHeight)* 100;
+        progress.style.height = progressHeight + "%";
+    }
+</script>
+</body>
+</html>
