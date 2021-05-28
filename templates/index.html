@@ -6,7 +6,7 @@
 <div>
     <form action="home" method="post">
         {% csrf_token%}
-    <input type="text" name = 'cityname'>
+        <input type="text" placeholder="addcity ind" required name="cityname">
     <input type="submit" value="Add City">
     </form>
 </div>
@@ -15,6 +15,14 @@
 <div>
     <h3>{{user.username}} is loged in</h3>
 </div>
+
+{% for data in datas%}
+
+<p><img src="https://openweathermap.org/img/w/{{data.icon}}.png" > <br>city: {{data.city}}<br>temperature: <strong>{{data.temperature}}</strong><br>description: {{data.description}}</p> 
+
+{%endfor%}
+
+
 {%else%}
 <div>
     <p>login first click <a href="login">here</a> to login.</p>
