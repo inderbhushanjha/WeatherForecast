@@ -52,6 +52,7 @@ Create ```.env``` file in the root directory and modify these settings:
     DB_USER = Database username
     DB_PASSWORD = Database password
     DB_HOST = HOST server address
+    WEATHER_API = Your open weather API key
 
 Make migrations:
 
