@@ -9,9 +9,11 @@ from .models import Cities
 # from django.db.models import Q  # for where clause queries.
 # Create your views here.
 
+API_KEY = config('WEATHER_API')
+url = 'https://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid={}'
 
-def index(request):
-    return render(request,'index.html')
+# def index(request):
+#     return render(request,'index.html')
 
 def login(request):
     if request.method == 'POST':
@@ -20,7 +22,7 @@ def login(request):
         user = auth.authenticate(username = username, password = password)
         if user is not None:
             auth.login(request,user)
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('home')
         else:
             messages.info(request, 'Incorrect Username or Password')
             return HttpResponseRedirect('login')
@@ -56,43 +58,18 @@ def signup(request):
     return render(request, 'signup.html')
 
 def home(request):
-    if request.user.is_anonymous:
-        return HttpResponseRedirect('/')
-    API_KEY = config('WEATHER_API')
-    weatherList = []
-    url = 'https://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid={}'
-    current_user = request.user
-    if len(Cities.objects.filter(username_id = current_user))<=0:
-        citiesList = Cities.objects.filter(username_id = current_user) # creating current user object to get visited
-    
-        for city in citiesList:
-            result = requests.get(url.format(city, API_KEY))
-            if result.status_code !=404:
-                result = requests.get(url.format(city, API_KEY)).json()
-                weatherdat = {
-                    'city': city,
-                    'temperature' : result['main']['temp'],
-                    'description' : result['weather'][0]['description'],
-                    'icon' : result['weather'][0]['icon'],
-                }
-                weatherList.append(weatherdat)
-
-    if request.method == 'POST':
-        city = request.POST['cityname']
+    # if request.user.is_anonymous:
+    #     return HttpResponseRedirect('home')
+    print(request.user.is_anonymous)
+    if request.user.is_anonymous is not True:
+        print("logged in")
         current_user = request.user
-        duplicateCityData = Cities.objects.filter(username_id = current_user ,visited = city).exists()
-        if duplicateCityData is not True  and requests.get(url.format(city, API_KEY)).status_code !=404 :
-            citydata = Cities(username_id = current_user.id,visited = city)  # adding city to database.
-            citydata.save()
-
-
         citiesList = Cities.objects.filter(username_id = current_user) # creating current user object to get visited
 
 
-        
+        weatherList = []
         for city in citiesList:
-            result = requests.get(url.format(city, API_KEY))
-            if result.status_code !=404:
+            if requests.get(url.format(city, API_KEY)).status_code !=404:
                 result = requests.get(url.format(city, API_KEY)).json()
                 weatherdat = {
                     'city': city,
@@ -101,32 +78,25 @@ def home(request):
                     'icon' : result['weather'][0]['icon'],
                 }
                 weatherList.append(weatherdat)
+        print(weatherList)
+    else:
+        return HttpResponseRedirect('anonuser')
 
-
-
-    print(weatherList)
-
-                # this is test section
-    # current_user = request.user
-    # if len(Cities.objects.filter(username_id = current_user))<=0:
-    #     citiesList = Cities.objects.filter(username_id = current_user) # creating current user object to get visited
-    #     print(citiesList)
-    #     print("else called")
-    
-    #     for city in citiesList:
-    #         result = requests.get(url.format(city, API_KEY))
-    #         if result.status_code !=404:
-    #             result = requests.get(url.format(city, API_KEY)).json()
-    #             weatherdat = {
-    #                 'city': city,
-    #                 'temperature' : result['main']['temp'],
-    #                 'description' : result['weather'][0]['description'],
-    #                 'icon' : result['weather'][0]['icon'],
-    #             }
-    #             weatherList.append(weatherdat)
-
-        # print(weatherList)
     return render(request, 'index.html', {'datas':weatherList[::-1]})
 
 def about(request):
     return render(request, 'about.html')
+
+def city(request):
+    current_user = request.user
+    if request.method == 'POST':
+        city = request.POST['cityname']
+        duplicateCityData = Cities.objects.filter(username_id = current_user ,visited = city).exists()
+        if duplicateCityData is not True  and requests.get(url.format(city, API_KEY)).status_code !=404 :
+            citydata = Cities(username_id = current_user.id,visited = city)  # adding city to database.
+            citydata.save()
+    return HttpResponseRedirect('home')
+
+
+def anonuser(request):
+    return render(request, 'index.html')

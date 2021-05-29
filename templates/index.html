@@ -4,7 +4,7 @@
 {% if user.is_authenticated %}
 
 <div>
-    <form action="home" method="post">
+    <form action="city" method="post">
         {% csrf_token%}
         <input type="text" placeholder="Add City" required name="cityname">
     <input type="submit" value="Add City">
