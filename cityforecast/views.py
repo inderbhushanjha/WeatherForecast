@@ -9,11 +9,13 @@ from .models import Cities
 # from django.db.models import Q  # for where clause queries.
 # Create your views here.
 
-API_KEY = config('WEATHER_API')
+API_KEY = config('WEATHER_API_open')
+
+
 url = 'https://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid={}'
 
-# def index(request):
-#     return render(request,'index.html')
+def homepage(request):
+    return render(request,'index.html')
 
 def login(request):
     if request.method == 'POST':
@@ -58,9 +60,6 @@ def signup(request):
     return render(request, 'signup.html')
 
 def home(request):
-    # if request.user.is_anonymous:
-    #     return HttpResponseRedirect('home')
-    print(request.user.is_anonymous)
     if request.user.is_anonymous is not True:
         print("logged in")
         current_user = request.user
@@ -72,7 +71,7 @@ def home(request):
             if requests.get(url.format(city, API_KEY)).status_code !=404:
                 result = requests.get(url.format(city, API_KEY)).json()
                 weatherdat = {
-                    'city': city,
+                    'city': result['name'],
                     'temperature' : result['main']['temp'],
                     'description' : result['weather'][0]['description'],
                     'icon' : result['weather'][0]['icon'],
@@ -80,7 +79,7 @@ def home(request):
                 weatherList.append(weatherdat)
         print(weatherList)
     else:
-        return HttpResponseRedirect('anonuser')
+        return HttpResponseRedirect('homepage')
 
     return render(request, 'index.html', {'datas':weatherList[::-1]})
 
@@ -98,5 +97,5 @@ def city(request):
     return HttpResponseRedirect('home')
 
 
-def anonuser(request):
-    return render(request, 'index.html')
+# def anonuser(request):
+#     return render(request, 'index.html')

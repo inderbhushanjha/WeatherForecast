@@ -19,7 +19,7 @@
 
 {% for data in datas%}
 
-<p><img src="https://openweathermap.org/img/w/{{data.icon}}.png" > <br>city: {{data.city}}<br>temperature: <strong>{{data.temperature}}</strong><br>description: {{data.description}}</p> 
+<p><img src="https://openweathermap.org/img/w/{{data.icon}}.png" > <br>city: {{data.city}}<br>temperature: {{data.temperature}}<strong>°C</strong><br>description: {{data.description}}</p> 
 
 {%endfor%}
 
